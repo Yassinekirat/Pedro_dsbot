@@ -1,10 +1,13 @@
 {
-    "hello": ["wa3alaykum salam!"],
-    "/roll": ["you rolled {result} (1-100)"],
-    "bye": ["sir t9wd a khoya sir far3lia a kerri"],
-    "help": ["Here are some commands you can try: Pedro hello - Pedro /roll - Pedro bye - Pedro dance or say something random I can respond to that too, who knows!"],
-    "dance": ["Pedro Pedro Pedroo! I can't use a gif just yet, sorry!"],
-    "mal zwa9?": ["chkun? ما الأمر مع الدهون؟ rah ghlid khalih"],
-    "finahuwa sohlofia?": ["bayna bark ykft"],
-    "default": ["Wallah ma3reftek ach katgoul", "sbr sbr dak l3wr ga3 magalia kifach njwd 3la had l blan", "bayna l ghlid li dawi m3aya db", "swl l haj yahia العرندس", "khoya wallah mafhamtek ach katkhwr", "l3ezzi a sa7bi how good is that dick"]
+    "responses": {
+      "hello": ["wa3alaykum salam!", "Hey there!", "Hello, how can I help you?"],
+      "bye": ["Goodbye!", "See you later!", "Adios!"],
+      "dance": ["Pedro Pedro Pedroo\nhttps://giphy.com/gifs/party-raccoon-racoon-ZJPSFNLmADueHvzoZ8"],
+      "random": ["Wallah ma3reftek ach katgoul",
+                 "sbr sbr dak l3wr ga3 magalia kifach njwd 3la had l blan",
+                 "bayna l ghlid li dawi m3aya db",
+                 "swl l haj yahia العرندس",
+                 "khoya wallah mafhamtek ach katkhwr",
+                 "l3ezzi a sa7bi how good is that dick"]
+    }
 }
