@@ -5,6 +5,7 @@ from discord.ext import commands
 import giphy_client
 from giphy_client.rest import ApiException
 import logging
+import discord
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -31,8 +32,25 @@ def handle_bye():
     return 'sir t9wd a khoya sir far3lia a kerri'
 
 def handle_help():
-    return ('Here are some commands you can try: Pedro hello - Pedro /roll - Pedro bye - Pedro dance '
-            'or say something random I can respond to that too, who knows!')
+    return (
+        "**Here are the commands you can use with Pedro:**\n\n"
+        "`Pedro hello`: Greet Pedro.\n"
+        "`Pedro /roll`: Roll a dice (1-100).\n"
+        "`Pedro bye`: Bid farewell to Pedro.\n"
+        "`Pedro help`: Display this help message.\n"
+        "`Pedro dance` or `Pedro chta7`: Watch Pedro dance!\n"
+        "`Pedro mal zwa9?`: Check the status of zwa9.\n"
+        "`Pedro finahuwa sohlofia?`: searching for سحلفية الكفيفيت.\n"
+        "`Pedro ch7al 10+10`: Solve a math problem.\n"
+        "`Pedro how good is that dick`: Get a rating on that dick.\n"
+        "`Pedro terma dazet`: Nooooo!.\n"
+        "`Pedro gif`: Get a random funny GIF.\n"
+        "\n"
+        "Feel free to use these commands anytime to interact with Pedro!\n"
+        "i will have a smart mode soon by using `Pedro be smart` and a normal mode `Pedro be normal`\n"
+        "but if i don t understand you i'll just say some randome bullshit."
+    )
+
 
 def handle_dance():
     return 'Pedro Pedro Pedroo\n' + DANCE_GIF_URL
@@ -49,13 +67,16 @@ def handle_ch7al_10_plus_10():
 def handle_how_good_is_that_dick():
     return 'amaazing!'
 
+
 def handle_terma_dazet():
-    return 'terma 9oziba dayza Nooo!\n' + MONKEY_GIF_URL
+    return 'terma, 9oziba dayza, Noooooo!\n[GIF](' + MONKEY_GIF_URL + ')'
 
 def handle_gif():
     try:
-        logger.info("Attempting to fetch a random GIF from Giphy.")
-        response = api_instance.gifs_random_get(api_key=api_key, rating='g', tag='funny')
+        logger.info("Attempting to fetch a random funny meme GIF from Giphy.")
+        # Specify tags related to memes and humor
+        tags = ['funny', 'meme', 'humor']
+        response = api_instance.gifs_random_get(api_key=api_key, rating='g', tag='+'.join(tags))
         
         # Log the full response for debugging
         logger.info(f"Giphy API response: {response}")
@@ -93,9 +114,10 @@ def get_response(user_input: str) -> str:
         else:
             command_mapping = {
                 'hello': handle_hello,
+                'hi': handle_hello,
                 '/roll': handle_roll,
                 'bye': handle_bye,
-                'help': handle_help,
+                '/help': handle_help,
                 'dance': handle_dance,
                 'chta7': handle_dance,
                 'mal zwa9?': handle_mal_zwa9,
