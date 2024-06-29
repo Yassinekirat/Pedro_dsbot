@@ -6,13 +6,13 @@ import giphy_client
 from giphy_client.rest import ApiException
 import logging
 import discord
+import requests
 
 nlp = spacy.load("en_core_web_sm")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 api_instance = giphy_client.DefaultApi()
 api_key = 'SUWQSugiOru9NsmGzExBsldHF8luulFI'
@@ -21,15 +21,104 @@ MONKEY_GIF_URL = "https://giphy.com/gifs/wahalaroom-help-ouch-oh-snap-lprIQG8Pl3
 
 smart_mode = False
 
+WEATHER_API_KEY = 'cf200b22dab18b5be0c59d5b1c2389dc'  # Your OpenWeatherMap API key
+
 def handle_hello():
-    return 'wa3alaykum salam!'
+    return 'Hello! How can I assist you today?'
 
 def handle_roll():
     roll_result = randint(1, 100)
-    return f"you rolled {roll_result} (1-100)"
+    return f"You rolled {roll_result} (1-100)"
 
 def handle_bye():
-    return 'sir t9wd a khoya sir far3lia a kerri'
+    return 'Goodbye! Have a great day!'
+
+def handle_weather(user_input):
+    if 'in' not in user_input:
+        return 'Please provide the location for the weather update.'
+    
+    location = user_input.split('in')[1].strip()
+    weather_url = f"http://api.openweathermap.org/data/2.5/weather?q={location}&appid={WEATHER_API_KEY}&units=metric"
+    
+    try:
+        response = requests.get(weather_url)
+        response.raise_for_status()
+        data = response.json()
+        
+        if data["cod"] != 200:
+            return f"Error: {data['message']}"
+        
+        weather_description = data["weather"][0]["description"]
+        temperature = data["main"]["temp"]
+        humidity = data["main"]["humidity"]
+        wind_speed = data["wind"]["speed"]
+        
+        return (
+            f"Weather in {location.capitalize()}:\n"
+            f"Description: {weather_description}\n"
+            f"Temperature: {temperature}°C\n"
+            f"Humidity: {humidity}%\n"
+            f"Wind Speed: {wind_speed} m/s"
+        )
+    except requests.RequestException as e:
+        logger.error(f"RequestException when calling OpenWeatherMap API: {e}")
+        return 'Error fetching weather data. Try again later.'
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return 'Unexpected error occurred. Try again later.'
+
+
+def handle_time():
+    from datetime import datetime
+    now = datetime.now()
+    return f'The current time is {now.strftime("%H:%M:%S")}'
+
+def handle_date():
+    from datetime import datetime
+    today = datetime.today()
+    return f"Today's date is {today.strftime('%Y-%m-%d')}"
+
+def handle_joke():
+    jokes = [
+        'Why don’t scientists trust atoms? Because they make up everything!',
+        'Why did the scarecrow win an award? Because he was outstanding in his field!',
+        'Why don’t skeletons fight each other? They don’t have the guts.',
+    ]
+    return choice(jokes)
+
+def handle_quote():
+    quotes = [
+        'The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela',
+        'The way to get started is to quit talking and begin doing. - Walt Disney',
+        'Your time is limited, so don’t waste it living someone else’s life. - Steve Jobs',
+    ]
+    return choice(quotes)
+
+def handle_fact():
+    facts = [
+        'Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.',
+        'Octopuses have three hearts.',
+        'Bananas are berries, but strawberries aren’t.'
+    ]
+    return choice(facts)
+
+def handle_definition(word):
+    # This is a placeholder. In a real application, you would call a dictionary API.
+    definitions = {
+        'example': 'a representative form or pattern',
+        'bot': 'a computer program that performs automated tasks',
+        'AI': 'artificial intelligence, the simulation of human intelligence in machines'
+    }
+    return definitions.get(word.lower(), f'Sorry, I don’t have a definition for {word}.')
+
+def handle_translate(text, target_language='en'):
+    # This is a placeholder. In a real application, you would call a translation API.
+    translations = {
+        ('hola', 'en'): 'hello',
+        ('bonjour', 'en'): 'hello',
+        ('ciao', 'en'): 'hello',
+    }
+    return translations.get((text.lower(), target_language), f'Sorry, I can’t translate {text} to {target_language}.')
 
 def handle_help():
     return (
@@ -39,37 +128,23 @@ def handle_help():
         "`Pedro bye`: Bid farewell to Pedro.\n"
         "`Pedro help`: Display this help message.\n"
         "`Pedro dance` or `Pedro chta7`: Watch Pedro dance!\n"
-        "`Pedro mal zwa9?`: Check the status of zwa9.\n"
-        "`Pedro finahuwa sohlofia?`: searching for سحلفية الكفيفيت.\n"
-        "`Pedro ch7al 10+10`: Solve a math problem.\n"
-        "`Pedro how good is that dick`: Get a rating on that dick.\n"
-        "`Pedro terma dazet`: Nooooo!.\n"
         "`Pedro gif`: Get a random funny GIF.\n"
+        "`Pedro weather <location>`: Get the weather for a specific location.\n"
+        "`Pedro time`: Get the current time.\n"
+        "`Pedro date`: Get the current date.\n"
+        "`Pedro joke`: Hear a joke.\n"
+        "`Pedro quote`: Get an inspirational quote.\n"
+        "`Pedro fact`: Learn an interesting fact.\n"
+        "`Pedro define <word>`: Get the definition of a word.\n"
+        "`Pedro translate <text> to <language>`: Translate text to a specified language.\n"
         "\n"
         "Feel free to use these commands anytime to interact with Pedro!\n"
-        "i will have a smart mode soon by using `Pedro be smart` and a normal mode `Pedro be normal`\n"
-        "but if i don t understand you i'll just say some randome bullshit."
+        "I will have a smart mode soon by using `Pedro be smart` and a normal mode `Pedro be normal`\n"
+        "but if I don’t understand you, I'll just say some random responses."
     )
-
 
 def handle_dance():
     return 'Pedro Pedro Pedroo\n' + DANCE_GIF_URL
-
-def handle_mal_zwa9():
-    return 'chkun? ما الأمر مع الدهون؟ rah ghlid khalih'
-
-def handle_finahuwa_sohlofia():
-    return 'bayna bark kaykft'
-
-def handle_ch7al_10_plus_10():
-    return 'darham'
-
-def handle_how_good_is_that_dick():
-    return 'amaazing!'
-
-
-def handle_terma_dazet():
-    return 'terma, 9oziba dayza, Noooooo!\n[GIF](' + MONKEY_GIF_URL + ')'
 
 def handle_gif():
     try:
@@ -120,12 +195,15 @@ def get_response(user_input: str) -> str:
                 '/help': handle_help,
                 'dance': handle_dance,
                 'chta7': handle_dance,
-                'mal zwa9?': handle_mal_zwa9,
-                'finahuwa sohlofia?': handle_finahuwa_sohlofia,
-                'ch7al 10+10': handle_ch7al_10_plus_10,
-                'how good is that dick': handle_how_good_is_that_dick,
-                'terma dazet': handle_terma_dazet,
                 'pedro gif': handle_gif,
+                'weather': lambda: handle_weather(user_input),
+                'time': handle_time,
+                'date': handle_date,
+                'joke': handle_joke,
+                'quote': handle_quote,
+                'fact': handle_fact,
+                'define': lambda: handle_definition(user_input.split('define ')[1]),
+                'translate': lambda: handle_translate(user_input.split('translate ')[1].split(' to ')[0], user_input.split(' to ')[1] if ' to ' in user_input else 'en'),
             }
 
             for command, handler in command_mapping.items():
@@ -133,14 +211,12 @@ def get_response(user_input: str) -> str:
                     return handler()
             
             return choice([
-                'Wallah ma3reftek ach katgoul',
-                'sbr sbr dak l3wr ga3 magalia kifach njwd 3la had l blan',
-                'bayna l ghlid li dawi m3aya db',
-                'swl l haj yahia العرندس',
-                'l3ezzi a sa7bi how good is that dick',
+                'I am not sure what you are saying.',
+                'Please hold on while I figure this out.',
+                'It appears I did not understand your request.',
+                'Could you please clarify your query?',
+                'How good is that rating?',
             ])
 
 def generate_smart_response(user_input: str) -> str:
-    # Use an AI model to generate responses based on the input
-    # For demonstration purposes, return a static response
     return "I'm feeling smarter!"
